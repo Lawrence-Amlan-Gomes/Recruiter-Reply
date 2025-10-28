@@ -1,46 +1,29 @@
 "use client";
 
+import { Suspense, useRef, useState } from "react";
 import colors from "@/app/color/color";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useResponse } from "@/app/hooks/useResponse";
 import { useTheme } from "@/app/hooks/useTheme";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
 
-export default function Hero() {
+function HeroContent() {
   const { theme } = useTheme();
   const { auth } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {
-    generationLimit,
-    myText,
-    setMyText,
-    aiResponse,
-    setAiResponse,
-    inputOuputPair,
-    setInputOutputPair,
-  } = useResponse();
-  const [isTyping, setIsTyping] = useState(true);
-  const [firstTime, setFirstTime] = useState(true);
-  const [request, setRequest] = useState(false);
-  const [tempMyText, setTempMyText] = useState("");
-  const [showLimitPopup, setShowLimitPopup] = useState(false);
-  const [showPopupMessage, setShowPopupMessage] = useState(
-    "Your daily limit is over. Please try again tomorrow"
-  );
+  const { myText } = useResponse();
+  const [isTyping] = useState(true);
+  const [request] = useState(false);
+  const [firstTime] = useState(true);
   const chatRef = useRef(null);
   const bottomRef = useRef(null);
-  const isUpdatingRef = useRef(false);
 
   const selectedDate = searchParams.get("selectedDate");
 
   return (
-    <div
-      className={`w-full px-[10%] mb-[5%] flex flex-col md:flex-row items-start justify-between`}
-    >
-      {/* Left Side: Heading, Subheading, and Buttons */}
+    <div className="w-full px-[10%] mb-[5%] flex flex-col md:flex-row items-start justify-between">
       <div className="w-full md:w-1/2 sm:pr-[5%] flex flex-col justify-center items-start space-y-6">
         <h1
           className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight ${
@@ -78,7 +61,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Right Side: Placeholder for Video (16:9 aspect ratio) */}
       <div className="w-full md:w-1/2 mt-8 md:mt-0 flex justify-center">
         <div
           className={`w-full max-w-[600px] aspect-[16/9] rounded-lg shadow-lg ${
@@ -91,5 +73,13 @@ export default function Hero() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Hero() {
+  return (
+    <Suspense fallback={<div>Loading hero...</div>}>
+      <HeroContent />
+    </Suspense>
   );
 }
