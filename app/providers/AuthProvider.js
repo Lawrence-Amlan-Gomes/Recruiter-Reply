@@ -1,7 +1,6 @@
 'use client'
 
 import {useState} from 'react';
-
 import { AuthContext } from '../contexts';
 
 export default function AuthProvider({children}) {

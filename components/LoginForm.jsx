@@ -290,8 +290,8 @@ const LoginForm = () => {
             onClick={handleGoogleSignIn}
             className={`text-[12px] lg:text-[16px] 2xl:text-[25px] flex items-center gap-4 lg:h-[60px] h-[40px] cursor-pointer rounded-md mt-10 py-2 px-4 lg:px-6 ${
               theme
-                ? "bg-orange-700 hover:bg-orange-800"
-                : "bg-orange-900 hover:bg-orange-950"
+                ? `${colors.keyColorBg} ${colors.keyColortBgHover}`
+                : `${colors.keyColorBg} ${colors.keyColortBgHover}`
             } text-white`}
           >
             <div className="h-full flex justify-center items-center">
@@ -320,7 +320,7 @@ const LoginForm = () => {
           No Account?{" "}
           <Link
             href="/register"
-            className={`${colors.keyColorText} hover:text-orange-500`}
+            className={`${colors.keyColorText} ${colors.keyColortTextHover}`}
           >
             Register
           </Link>

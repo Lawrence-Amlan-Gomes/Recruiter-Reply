@@ -2,6 +2,6 @@ import { ResponseContext } from "../contexts";
 import { useContext } from "react";
 
 export const useResponse = () => {
-    const {myText,setMyText,aiResponse,setAiResponse,inputOuputPair, setInputOutputPair} = useContext(ResponseContext);
-    return {myText,setMyText,aiResponse,setAiResponse,inputOuputPair, setInputOutputPair};
+    const {generationLimit, myText,setMyText,aiResponse,setAiResponse,inputOuputPair, setInputOutputPair, today, setToday, wantToPaymentType, setWantToPaymentType, wantToPaymentDuration, setWantToPaymentDuration} = useContext(ResponseContext);
+    return {generationLimit, myText,setMyText,aiResponse,setAiResponse,inputOuputPair, setInputOutputPair, today, setToday, wantToPaymentType, setWantToPaymentType, wantToPaymentDuration, setWantToPaymentDuration};
 }

@@ -5,8 +5,34 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { useTheme } from "@/app/hooks/useTheme";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import EachField from "./EachField"; 
-// Fixed
+import EachField from "./EachField";
+
+async function hashPassword(password, iterations = 10000) {
+  try {
+    const fixedSalt = "fixedSalt1234567890abcdef";
+    const encodedPassword = new TextEncoder().encode(password);
+    const encodedSalt = new TextEncoder().encode(fixedSalt);
+
+    const combined = new Uint8Array(
+      encodedPassword.length + encodedSalt.length
+    );
+    combined.set(encodedPassword, 0);
+    combined.set(encodedSalt, encodedPassword.length);
+
+    let data = combined;
+    for (let i = 0; i < iterations; i++) {
+      data = new Uint8Array(await crypto.subtle.digest("SHA-256", data));
+    }
+
+    const hash = Array.from(data)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hash;
+  } catch (error) {
+    console.error("Error hashing password:", error);
+    throw error;
+  }
+}
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -53,7 +79,7 @@ const ChangePassword = () => {
         error: "Your password must be at least 8 characters",
       });
     } else {
-      if (confirmPassword.length >= 8 && newPassword != confirmPassword) {
+      if (confirmPassword.length >= 8 && newPassword !== confirmPassword) {
         setConfirmPasswordError({
           iserror: true,
           error: "Isn't matching with new password",
@@ -68,29 +94,39 @@ const ChangePassword = () => {
   }, [newPassword, confirmPassword]);
 
   useEffect(() => {
-    if (auth) {
-      if (auth.password != password) {
-        setPasswordError({ ...passwordError, iserror: true });
+    const checkPassword = async () => {
+      if (auth && password) {
+        try {
+          const hashedPassword = await hashPassword(password);
+          if (auth.password !== hashedPassword) {
+            setPasswordError({ iserror: true, error: "Password is incorrect" });
+          } else {
+            setPasswordError({ iserror: false, error: "Password is correct" });
+          }
+        } catch (error) {
+          console.error("Error hashing password:", error);
+          setPasswordError({ iserror: true, error: "Error verifying password" });
+        }
       } else {
-        setPasswordError({ ...passwordError, iserror: false });
+        setPasswordError({ iserror: true, error: "Password is required" });
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [password]);
+    };
+    checkPassword();
+  }, [password, auth]);
 
   useEffect(() => {
-    if (passwordError.iserror == false && newPasswordError.iserror == false) {
-      if (confirmPasswordError.iserror == false) {
-        setNoError(true);
-      } else {
-        setNoError(false);
-      }
+    if (
+      !passwordError.iserror &&
+      !newPasswordError.iserror &&
+      !confirmPasswordError.iserror
+    ) {
+      setNoError(true);
     } else {
       setNoError(false);
     }
   }, [
-    newPasswordError.iserror,
     passwordError.iserror,
+    newPasswordError.iserror,
     confirmPasswordError.iserror,
   ]);
 
@@ -101,8 +137,18 @@ const ChangePassword = () => {
       );
       if (sureSubmit) {
         if (auth) {
-          await callChangePassword(auth.email, newPassword);
-          setAuth({ ...auth, password: newPassword });
+          try {
+            const hashedNewPassword = await hashPassword(newPassword);
+            await callChangePassword(auth.email, hashedNewPassword);
+            setAuth({ ...auth, password: hashedNewPassword });
+            router.push("/");
+          } catch (error) {
+            console.error("Error changing password:", error);
+            setPasswordError({
+              iserror: true,
+              error: "Error changing password",
+            });
+          }
         }
       }
     }
@@ -110,7 +156,7 @@ const ChangePassword = () => {
 
   return auth ? (
     <div
-      className={`w-full sm:p-0 p-[5%] overflow-y-auto lg:overflow-hidden lg:flex lg:justify-center lg:items-center sm:pt-[12%]`}
+      className={`w-full sm:p-0 p-[5%] mt-[20%] sm:mt-0 overflow-y-auto lg:overflow-hidden lg:flex lg:justify-center lg:items-center sm:pt-[12%]`}
     >
       <div
         className={`p-10 overflow-hidden rounded-lg sm:my-[5%] sm:w-[80%] sm:mx-[10%] lg:w-[700px] xl:w-[800px] 2xl:w-[900px] lg:my-0 text-center ${

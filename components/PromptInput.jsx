@@ -3,6 +3,7 @@
 import { useTheme } from "@/app/hooks/useTheme";
 import { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
+import colors from "@/app/color/color";
 
 export default function PromptInput({
   myText,
@@ -37,13 +38,13 @@ export default function PromptInput({
       }`}
     >
       <textarea
-        className={`w-full h-full sm:text-[14px] pl-[3%] pr-[15%] py-[1%] rounded-lg resize-none overflow-y-auto outline-none scrollbar-thin ${
+        className={`w-full h-full text-[12px] sm:text-[16px] pl-[3%] pr-[15%] py-[1%] sm:pl-[2%] rounded-lg resize-none overflow-y-auto outline-none scrollbar-thin ${
           theme
             ? "bg-white text-black placeholder:text-[#666666] scrollbar-thumb-[#222222] scrollbar-track-[#f8f8f8]"
             : "bg-black text-[#eeeeee] placeholder:text-[#888888] scrollbar-thumb-[#eeeeee] scrollbar-track-[#0f0f0f]"
         }`}
         placeholder={
-          iAmThinking ? "I am thinking..." : "Ask me anything about me..."
+          iAmThinking ? "I am thinking..." : "Ask me anything about Recruiter Reply..."
         }
         value={myText}
         onChange={(e) => {
@@ -59,7 +60,7 @@ export default function PromptInput({
             getResponse();
           }
         }}
-        className="absolute bottom-5 right-5 cursor-pointer hover:text-white hover:border-[1px] hover:bg-orange-800 text-orange-800 border-[1px] border-orange-800 rounded-full p-1 text-[25px] sm:text-[25px] hover:cursor-pointer"
+        className={`absolute bottom-2 right-2 sm:bottom-3 sm:right-3 cursor-pointer hover:text-white hover:border-[1px] ${colors.keyColortBgHover} ${colors.keyColorText} ${colors.keyColorBorder} border-[1px] rounded-md p-1 text-[25px] sm:text-[25px] hover:cursor-pointer`}
       />
     </div>
   );

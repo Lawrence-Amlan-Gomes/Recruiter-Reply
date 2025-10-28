@@ -22,11 +22,11 @@ const schema = new Schema({
     type: String,
   },
   createdAt: {
-    type: Date,
+    type: String,
     required: false,
   },
-  updatedAt: {
-    type: Date,
+  expiredAt: {
+    type: String,
     required: false,
   },
   isAdmin: {
@@ -35,6 +35,10 @@ const schema = new Schema({
   },
   firstTimeLogin: {
     type: Boolean,
+    required: false,
+  },
+  history: {
+    type: Array,
     required: false,
   },
 });

@@ -18,8 +18,8 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "E-commerce",
-  description: "E-commerce",
+  title: "Recruiter Reply",
+  description: "Recruiter Reply",
   icons: {
     icon: ["/favicon.ico?v=4"],
     apple: ["/apple-touch-icon.png?v=4"],
